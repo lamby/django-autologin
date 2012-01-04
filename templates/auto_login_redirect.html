@@ -1,0 +1,19 @@
+<html>
+  <head>
+    {% js "jquery.js" %}
+    <script type="text/javascript">
+      var target = window.location.href;
+      $.post(window.location.href, {}, function() {
+          var url = "{{ path }}";
+
+          if (window.location.hash) {
+            url = url + window.location.hash;
+          }
+
+          window.location = url;
+      });
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
