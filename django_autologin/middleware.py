@@ -44,7 +44,7 @@ class AutomaticLoginMiddleware(object):
             return redirect(self.strip_token(request.get_full_path()))
 
         try:
-           TimestampSigner(salt=user.password).unsign(
+            TimestampSigner(salt=user.password).unsign(
                 token, max_age=60*60*24*90,
             )
         except BadSignature:
