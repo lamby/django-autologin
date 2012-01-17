@@ -1,13 +1,10 @@
-from django.http import HttpResponse
-from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.utils.cache import add_never_cache_headers
-from django.contrib.auth import login
 from django.core.signing import TimestampSigner, BadSignature
 from django.contrib.auth.models import User
 
 from . import app_settings
-from .utils import strip_token
+from .utils import login, strip_token
 
 class AutomaticLoginMiddleware(object):
     def process_request(self, request):
@@ -24,25 +21,31 @@ class AutomaticLoginMiddleware(object):
 
             user = User.objects.get(id=user_id)
         except (ValueError, User.DoesNotExist):
-            return redirect(self.strip_token(request.get_full_path()))
+            return redirect(strip_token(request.get_full_path()))
 
         try:
             TimestampSigner(salt=user.password).unsign(
                 token, max_age=60*60*24*90,
             )
         except BadSignature:
-            return redirect(self.strip_token(request.get_full_path()))
+            return redirect(strip_token(request.get_full_path()))
 
-        if request.method == 'POST':
-            user.backend = settings.AUTHENTICATION_BACKENDS[0]
-            login(request, user)
-            return HttpResponse()
-
-        response = render(request, 'account/auto_login_redirect.html', {
-            'path': self.strip_token(request.get_full_path()),
-            'token': token,
-        })
+        response = self.render(
+            request,
+            user,
+            token,
+            strip_token(request.get_full_path()),
+        )
 
         add_never_cache_headers(response)
 
         return response
+
+    def render(self, request, user, token, path):
+        """
+        Subclasses may override this behaviour.
+        """
+
+        login(request, user)
+
+        return redirect(path)
