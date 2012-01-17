@@ -32,15 +32,16 @@ class AutomaticLoginMiddleware(object):
         )
 
     def process_request(self, request):
-        if request.user.is_authenticated():
-            return
-
         token = request.GET.get(self.key)
         if not token:
             return
 
         try:
             user_id = int(token.split(':', 1)[0])
+
+            # Only change user if necessary.
+            if request.user.id == user_id:
+                return
 
             user = User.objects.get(id=user_id)
         except (ValueError, User.DoesNotExist):
