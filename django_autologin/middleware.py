@@ -1,6 +1,3 @@
-import urllib
-import urlparse
-
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -10,23 +7,9 @@ from django.core.signing import TimestampSigner, BadSignature
 from django.contrib.auth.models import User
 
 from . import app_settings
+from .utils import strip_token
 
 class AutomaticLoginMiddleware(object):
-    def strip_token(self, url):
-        bits = urlparse.urlparse(url)
-        original_query = urlparse.parse_qsl(bits.query)
-
-        query = {}
-        for k, v in original_query:
-            if k != app_settings.KEY:
-                query[k] = v
-
-        query = urllib.urlencode(query)
-
-        return urlparse.urlunparse(
-            (bits[0], bits[1], bits[2], bits[3], query, bits[5]),
-        )
-
     def process_request(self, request):
         token = request.GET.get(app_settings.KEY)
         if not token:
