@@ -39,9 +39,9 @@ class AutomaticLoginMiddleware(object):
         if not token:
             return
 
-        user_id = token.split(':', 1)[0]
-
         try:
+            user_id = int(token.split(':', 1)[0])
+
             user = User.objects.get(id=user_id)
         except (ValueError, User.DoesNotExist):
             return redirect(self.strip_token(request.get_full_path()))
