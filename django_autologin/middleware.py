@@ -25,7 +25,7 @@ class AutomaticLoginMiddleware(object):
 
         try:
             TimestampSigner(salt=user.password).unsign(
-                token, max_age=60*60*24*90,
+                token, max_age=app_settings.MAX_AGE,
             )
         except BadSignature:
             return redirect(strip_token(request.get_full_path()))
