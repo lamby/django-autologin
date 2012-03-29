@@ -17,9 +17,9 @@ class AutomaticLoginMiddleware(object):
         try:
             user_id = int(token.split(':', 1)[0])
 
-            # Only change user if necessary.
+            # Only change user if necessary. We strip the token in any case.
             if request.user.id == user_id:
-                return
+                return r
 
             user = User.objects.get(id=user_id)
         except (ValueError, User.DoesNotExist):
