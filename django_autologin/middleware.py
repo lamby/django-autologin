@@ -12,6 +12,8 @@ class AutomaticLoginMiddleware(object):
         if not token:
             return
 
+        r = redirect(strip_token(request.get_full_path()))
+
         try:
             user_id = int(token.split(':', 1)[0])
 
@@ -21,14 +23,14 @@ class AutomaticLoginMiddleware(object):
 
             user = User.objects.get(id=user_id)
         except (ValueError, User.DoesNotExist):
-            return redirect(strip_token(request.get_full_path()))
+            return r
 
         try:
             TimestampSigner(salt=user.password).unsign(
                 token, max_age=app_settings.MAX_AGE,
             )
         except BadSignature:
-            return redirect(strip_token(request.get_full_path()))
+            return r
 
         response = self.render(
             request,
