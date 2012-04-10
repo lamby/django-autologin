@@ -26,7 +26,4 @@ def login(request, user):
     auth.login(request, user)
 
 def get_user_salt(user):
-    salt = ''
-    for fieldname in app_settings.SALT_FIELDS:
-        salt += str(getattr(user, fieldname))
-    return salt
+    return "".join(str(getattr(user, x)) for x in app_settings.SALT_FIELDS)
