@@ -4,7 +4,7 @@ from django.core.signing import TimestampSigner, BadSignature
 from django.contrib.auth.models import User
 
 from . import app_settings
-from .utils import login, strip_token
+from .utils import login, strip_token, get_user_salt
 
 class AutomaticLoginMiddleware(object):
     def process_request(self, request):
@@ -26,7 +26,7 @@ class AutomaticLoginMiddleware(object):
             return r
 
         try:
-            TimestampSigner(salt=user.password).unsign(
+            TimestampSigner(salt=get_user_salt(user)).unsign(
                 token, max_age=app_settings.MAX_AGE,
             )
         except BadSignature:
