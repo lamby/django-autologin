@@ -15,13 +15,14 @@ class AutomaticLoginMiddleware(object):
         r = redirect(strip_token(request.get_full_path()))
 
         try:
-            user_id = int(token.split(':', 1)[0])
+            pk = int(token.split(':', 1)[0])
 
             # Only change user if necessary. We strip the token in any case.
-            if request.user.id == user_id:
+            # The AnonymousUser class has no 'pk' attribute (#18093)
+            if getattr(request.user, 'pk', request.user.id) == pk:
                 return r
 
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(pk=pk)
         except (ValueError, User.DoesNotExist):
             return r
 

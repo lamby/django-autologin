@@ -10,6 +10,6 @@ register = template.Library()
 def automatic_login_token(user):
     token = TimestampSigner(
         salt=get_user_salt(user),
-    ).sign(user.id)
+    ).sign(user.pk)
 
     return "%s=%s" % (app_settings.KEY, token)
