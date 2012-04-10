@@ -24,3 +24,9 @@ def strip_token(url):
 def login(request, user):
     user.backend = settings.AUTHENTICATION_BACKENDS[0]
     auth.login(request, user)
+
+def get_user_salt(user):
+    salt = ''
+    for fieldname in app_settings.SALT_FIELDS:
+        salt += str(getattr(user, fieldname))
+    return salt
