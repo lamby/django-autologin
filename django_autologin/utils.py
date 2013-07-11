@@ -28,7 +28,10 @@ def login(request, user):
 def get_user_salt(user):
     parts = []
 
-    for x in app_settings.SALT_FIELDS:
-        parts.append(getattr(user, x))
+    for field in app_settings.SALT_FIELDS:
+        # Follow "django__join__notation'
+        part = reduce(lambda x, y: getattr(x, y), field.split('__'), user)
+
+        parts.append(part)
 
     return ''.join(str(x) for x in parts)
