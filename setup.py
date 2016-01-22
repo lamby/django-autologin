@@ -1,12 +1,20 @@
-from distutils.core import setup
+#!/usr/bin/env python
+
+from setuptools import setup, find_packages
 
 setup(
-    name='django_autologin',
-    version='0.1',
-    packages=(
-        'django_autologin',
-        'django_autologin.templatetags'
-    ),
-    install_requires=['django>=1.0'],
+    name='django-autologin',
+
+    url="https://chris-lamb.co.uk/projects/django-slack",
+    version='0.0.1',
     description="Token generator and processor to provide automatic login links for users",
+
+    author="Chris Lamb",
+    author_email="chris@chris-lamb.co.uk",
+    license="BSD",
+
+    packages=find_packages(),
+    install_requires=(
+        'Django>=1.6.8',
+    ),
 )
