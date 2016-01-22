@@ -6,7 +6,7 @@ setup(
     name='django-autologin',
 
     url="https://chris-lamb.co.uk/projects/django-slack",
-    version='0.0.1',
+    version='0.0.2',
     description="Token generator and processor to provide automatic login links for users",
 
     author="Chris Lamb",
