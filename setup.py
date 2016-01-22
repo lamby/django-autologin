@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name='django-autologin',
 
-    url="https://chris-lamb.co.uk/projects/django-slack",
+    url="https://chris-lamb.co.uk/projects/django-autologin",
     version='0.0.3',
     description="Token generator and processor to provide automatic login links for users",
 
