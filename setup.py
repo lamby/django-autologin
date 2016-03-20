@@ -14,7 +14,8 @@ setup(
     license="BSD",
 
     packages=find_packages(),
+
     install_requires=(
-        'Django>=1.6.8',
+        'Django>=1.8',
     ),
 )
