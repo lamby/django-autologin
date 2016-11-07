@@ -30,8 +30,8 @@ def get_user_salt(user):
     for field in app_settings.SALT_FIELDS:
         # Follow "django__join__notation'
         part = user
-        for fieldStep in field.split('__'):
-            part = getattr(part, fieldStep)
+        for x in field.split('__'):
+            part = getattr(part, x)
 
         parts.append(part)
 
