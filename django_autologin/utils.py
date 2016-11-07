@@ -31,7 +31,7 @@ def get_user_salt(user):
         # Follow "django__join__notation'
         part = user
         for fieldStep in field.split('__'):
-        	part = getattr(part,fieldStep)
+            part = getattr(part,fieldStep)
 
         parts.append(part)
 
