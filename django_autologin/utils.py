@@ -1,5 +1,4 @@
-import urllib
-from urllib import parse as urlparse
+from six.moves import urllib.parse as urlparse
 
 from django.conf import settings
 from django.contrib import auth
