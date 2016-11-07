@@ -1,5 +1,4 @@
-import urllib
-import urlparse
+from six.moves import urllib.parse as urlparse
 
 from django.conf import settings
 from django.contrib import auth
@@ -15,7 +14,7 @@ def strip_token(url):
         if k != app_settings.KEY:
             query[k] = v
 
-    query = urllib.urlencode(query)
+    query = urlparse.urlencode(query)
 
     return urlparse.urlunparse(
         (bits[0], bits[1], bits[2], bits[3], query, bits[5]),
@@ -30,7 +29,9 @@ def get_user_salt(user):
 
     for field in app_settings.SALT_FIELDS:
         # Follow "django__join__notation'
-        part = reduce(lambda x, y: getattr(x, y), field.split('__'), user)
+        part = user
+        for fieldStep in field.split('__'):
+        	part = getattr(part,fieldStep)
 
         parts.append(part)
 
