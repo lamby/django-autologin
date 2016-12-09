@@ -2,11 +2,12 @@ from django.shortcuts import redirect
 from django.utils.cache import add_never_cache_headers
 from django.core.signing import TimestampSigner, BadSignature
 from django.contrib.auth.models import User
+from django.utils.deprecation import MiddlewareMixin
 
 from . import app_settings
 from .utils import login, strip_token, get_user_salt
 
-class AutomaticLoginMiddleware(object):
+class AutomaticLoginMiddleware(MiddlewareMixin):
     def process_request(self, request):
         token = request.GET.get(app_settings.KEY)
         if not token:
