@@ -9,10 +9,11 @@ def strip_token(url):
     bits = urlparse.urlparse(url)
     original_query = urlparse.parse_qsl(bits.query)
 
-    query = {}
-    for k, v in original_query:
-        if k != app_settings.KEY:
-            query[k] = v
+    query = [
+        (k, v)
+        for k, v in original_query
+        if k != app_settings.KEY
+    ]
 
     query = urlparse.urlencode(query)
 
