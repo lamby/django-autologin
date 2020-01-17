@@ -19,11 +19,11 @@ class AutomaticLoginMiddleware(MiddlewareMixin):
         r = redirect(strip_token(request.get_full_path()))
 
         try:
-            pk = int(token.split(':', 1)[0])
+            pk = int(token.split(":", 1)[0])
 
             # Only change user if necessary. We strip the token in any case.
             # The AnonymousUser class has no 'pk' attribute (#18093)
-            if getattr(request.user, 'pk', request.user.id) == pk:
+            if getattr(request.user, "pk", request.user.id) == pk:
                 return r
 
             user = User.objects.get(pk=pk)
@@ -38,10 +38,7 @@ class AutomaticLoginMiddleware(MiddlewareMixin):
             return r
 
         response = self.render(
-            request,
-            user,
-            token,
-            strip_token(request.get_full_path()),
+            request, user, token, strip_token(request.get_full_path()),
         )
 
         add_never_cache_headers(response)
