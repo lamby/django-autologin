@@ -8,11 +8,9 @@ from . import app_settings
 
 
 def get_automatic_login_token(user):
-    token = TimestampSigner(
+    return TimestampSigner(
         salt=get_user_salt(user),
     ).sign(user.pk)
-
-    return "%s=%s" % (app_settings.KEY, token)
 
 
 def validate_token(user, token) -> bool:
