@@ -2,7 +2,7 @@ from six.moves.urllib import parse as urlparse
 
 from django.conf import settings
 from django.contrib import auth
-from django.core.signing import TimestampSigner
+from django.core.signing import TimestampSigner, BadSignature
 
 from . import app_settings
 
@@ -13,6 +13,17 @@ def get_automatic_login_token(user):
     ).sign(user.pk)
 
     return "%s=%s" % (app_settings.KEY, token)
+
+
+def validate_token(user, token) -> bool:
+    try:
+        TimestampSigner(salt=get_user_salt(user)).unsign(
+            token,
+            max_age=app_settings.MAX_AGE,
+        )
+        return True
+    except BadSignature:
+        return False
 
 
 def strip_token(url):
