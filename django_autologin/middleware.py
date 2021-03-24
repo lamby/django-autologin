@@ -1,11 +1,10 @@
 from django.shortcuts import redirect
 from django.utils.cache import add_never_cache_headers
-from django.core.signing import TimestampSigner, BadSignature
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth import get_user_model
 
 from . import app_settings
-from .utils import login, strip_token, get_user_salt
+from .utils import login, strip_token, validate_token
 
 User = get_user_model()
 
@@ -30,11 +29,7 @@ class AutomaticLoginMiddleware(MiddlewareMixin):
         except (ValueError, User.DoesNotExist):
             return r
 
-        try:
-            TimestampSigner(salt=get_user_salt(user)).unsign(
-                token, max_age=app_settings.MAX_AGE,
-            )
-        except BadSignature:
+        if not validate_token(user, token):
             return r
 
         response = self.render(
