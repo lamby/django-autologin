@@ -2,8 +2,17 @@ from six.moves.urllib import parse as urlparse
 
 from django.conf import settings
 from django.contrib import auth
+from django.core.signing import TimestampSigner
 
 from . import app_settings
+
+
+def get_automatic_login_token(user):
+    token = TimestampSigner(
+        salt=get_user_salt(user),
+    ).sign(user.pk)
+
+    return "%s=%s" % (app_settings.KEY, token)
 
 
 def strip_token(url):
