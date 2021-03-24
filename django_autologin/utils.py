@@ -6,19 +6,20 @@ from django.core.signing import TimestampSigner, BadSignature
 
 from . import app_settings
 
+SEPARATOR = ':'
 
 def get_automatic_login_token(user):
-    return TimestampSigner(
-        salt=get_user_salt(user),
-    ).sign(user.pk)
+    signer = TimestampSigner(salt=get_user_salt(user), sep=SEPARATOR)
+    return signer.sign(user.pk)
 
 
 def validate_token(user, token) -> bool:
+    if SEPARATOR not in token:
+        return False
+
     try:
-        TimestampSigner(salt=get_user_salt(user)).unsign(
-            token,
-            max_age=app_settings.MAX_AGE,
-        )
+        signer = TimestampSigner(salt=get_user_salt(user), sep=SEPARATOR)
+        signer.unsign(token, max_age=app_settings.MAX_AGE)
         return True
     except BadSignature:
         return False
