@@ -19,8 +19,8 @@ def validate_token(user, token) -> bool:
 
     try:
         signer = TimestampSigner(salt=get_user_salt(user), sep=SEPARATOR)
-        signer.unsign(token, max_age=app_settings.MAX_AGE)
-        return True
+        user_id = signer.unsign(token, max_age=app_settings.MAX_AGE)
+        return user_id == str(user.id)
     except BadSignature:
         return False
 
