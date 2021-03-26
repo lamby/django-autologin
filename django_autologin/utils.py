@@ -13,13 +13,16 @@ def get_automatic_login_token(user):
     return signer.sign(user.pk)
 
 
-def validate_token(user, token) -> bool:
+def validate_token(user, token, max_age=None) -> bool:
     if SEPARATOR not in token:
         return False
 
+    if max_age is None:
+        max_age = app_settings.MAX_AGE
+
     try:
         signer = TimestampSigner(salt=get_user_salt(user), sep=SEPARATOR)
-        user_id = signer.unsign(token, max_age=app_settings.MAX_AGE)
+        user_id = signer.unsign(token, max_age=max_age)
         return user_id == str(user.id)
     except BadSignature:
         return False
